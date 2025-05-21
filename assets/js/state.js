@@ -25,10 +25,6 @@ export async function eliminarProducto(id) {
     guardarCarrito()
     if (producto) mostrarToast(`"${producto.title}" eliminado`, 'eliminado')
     renderPanel()
-
-    if (window.location.pathname === '/carrito') {
-      router()
-    }
     document.dispatchEvent(
       new CustomEvent('cantidad-cambiada', {
         detail: { id, cantidad: 0 },
@@ -41,7 +37,7 @@ export async function eliminarProducto(id) {
     return new Promise((resolve) => {
       setTimeout(() => {
         eliminar()
-        resolve()
+        // resolve()
       }, 300)
     })
   } else {
@@ -85,7 +81,6 @@ export function sumarCantidad(id) {
   if (item) item.quantity += 1
   guardarCarrito()
   renderPanel()
-  if (window.location.pathname === '/carrito') router()
   document.dispatchEvent(
     new CustomEvent('cantidad-cambiada', {
       detail: { id, cantidad: item.quantity },
@@ -94,25 +89,24 @@ export function sumarCantidad(id) {
 }
 
 //Restar cantidad
+
 export async function restarCantidad(id) {
   const item = carrito.find((p) => p.id === id)
-
   if (!item) return
-  if (item.quantity > 1) {
-    item.quantity -= 1
-    guardarCarrito()
-    renderPanel()
-    if (window.location.pathname === '/carrito') {
-      router()
-    }
-    document.dispatchEvent(
-      new CustomEvent('cantidad-cambiada', {
-        detail: { id, cantidad: item.quantity },
-      })
-    )
-  } else {
-    await eliminarProducto(id)
+
+  item.quantity -= 1
+
+  if (item.quantity <= 0) {
+    carrito = carrito.filter((p) => p.id !== id)
   }
+
+  guardarCarrito()
+  renderPanel()
+  document.dispatchEvent(
+    new CustomEvent('cantidad-cambiada', {
+      detail: { id, cantidad: item.quantity },
+    })
+  )
 }
 
 //Renderizar el panel del carrito

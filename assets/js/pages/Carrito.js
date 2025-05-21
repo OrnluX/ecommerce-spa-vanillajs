@@ -4,6 +4,7 @@ import {
   sumarCantidad,
   restarCantidad,
 } from '../state.js'
+import { iniciarListenerCarrito } from '../utils/listenerCarrito.js'
 
 export default function CarritoPage() {
   const section = document.createElement('section')
@@ -97,4 +98,6 @@ export default function CarritoPage() {
   const app = document.getElementById('app')
   app.innerHTML = ''
   app.appendChild(section)
+
+  iniciarListenerCarrito()
 }

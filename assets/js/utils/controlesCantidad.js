@@ -23,7 +23,6 @@ export function mostrarControlesCantidad(btn, productoId) {
 
     if (!sigueEnCarrito) {
       wrapper.remove()
-      contenedor.appendChild(btn)
       return
     }
     cantidad.textContent = obtenerCantidadActual(productoId)

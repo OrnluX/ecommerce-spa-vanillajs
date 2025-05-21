@@ -1,5 +1,6 @@
 import { agregarAlCarrito, carrito } from '../state.js'
 import { mostrarControlesCantidad } from '../utils/controlesCantidad.js'
+import { iniciarListenerCantidad } from '../utils/listenerCantidad.js'
 
 export default async function Home() {
   const res = await fetch('https://fakestoreapi.com/products')
@@ -65,35 +66,5 @@ export default async function Home() {
   document.getElementById('app').innerHTML = ''
   document.getElementById('app').appendChild(container)
 
-  // Escuchar actualizaciones de cantidad desde otras vistas
-  document.addEventListener('cantidad-cambiada', (e) => {
-    const { id, cantidad } = e.detail
-
-    const card = document.querySelector(`.card[data-id="${id}"]`)
-    if (!card) return
-
-    const span = card.querySelector('.controles-cantidad .cantidad')
-    if (span) {
-      if (cantidad > 0) {
-        span.textContent = cantidad
-      } else {
-        // Volver al botón original si la cantidad llega a 0
-        const contenedor = span.parentElement.parentElement
-        contenedor.innerHTML = ''
-
-        const btn = document.createElement('button')
-        btn.classList.add('primary-btn', 'add-to-cart-btn')
-        btn.textContent = 'Agregar al carrito'
-        btn.onclick = () => {
-          const producto = productos.find((p) => p.id === id)
-          if (producto) {
-            agregarAlCarrito(producto)
-            mostrarControlesCantidad(btn, producto.id)
-          }
-        }
-
-        contenedor.appendChild(btn)
-      }
-    }
-  })
+  iniciarListenerCantidad(productos)
 }
