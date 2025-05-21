@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tienda Online</title>
+    <link rel="stylesheet" href="./assets/css/style.css" />
+    <!-- Font Awesome CDN -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header id="navbar">
+      <div class="header-container">
+        <button class="menu-toggle" id="menu-toggle">
+          <img
+            id="menu-icon"
+            src="./assets/icons/icons8-menu.svg"
+            alt="Abrir menú"
+          />
+        </button>
+
+        <div class="logo">MiLogo</div>
+
+        <nav class="nav-links" id="nav-links">
+          <a href="/" data-link>Tienda</a>
+          <a href="/categorias" data-link>Categorias</a>
+          <a href="/carrito" data-link>Carrito</a>
+          <a href="/contacto" data-link>Contacto</a>
+          <a href="/nosotros" data-link>Sobre Nosotros</a>
+        </nav>
+
+        <div class="icons">
+          <div class="theme-switch">
+            <input type="checkbox" id="theme-toggle" />
+            <label for="theme-toggle" class="switch">
+              <span class="icon sun">
+                <img src="./assets/icons/sun.png" alt="" />
+              </span>
+              <span class="icon moon">
+                <img src="./assets/icons/moon.png" alt="" />
+              </span>
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div id="carrito-boton">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span id="contador-carrito">0</span>
+          </div>
+
+          <!-- Mini carrito desplegable -->
+          <div id="carrito-panel" class="carrito-panel oculto">
+            <div class="carrito-header">
+              <h4>Carrito</h4>
+              <button class="btn-cantidad" id="cerrar-carrito">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+
+            <ul id="carrito-lista"></ul>
+            <p id="carrito-vacio">Tu carrito está vacío.</p>
+            <div class="total-carrito" id="total-carrito">Total: $0.00</div>
+            <button id="ver-carrito" class="secondary-btn carrito-btn">
+              Ver Carrito
+            </button>
+            <button class="primary-btn carrito-btn">Finalizar Pedido</button>
+          </div>
+
+          <i id="favoritos-boton" class="fa-regular fa-heart"></i>
+        </div>
+      </div>
+    </header>
+
+    <main id="app" class="container"></main>
+
+    <div id="toast-container"></div>
+    <script type="module" src="./assets/js/main.js"></script>
+  </body>
+</html>
