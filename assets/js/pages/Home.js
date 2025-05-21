@@ -30,7 +30,6 @@ export default async function Home() {
 
     const h3 = document.createElement('h3')
     h3.textContent = p.title
-
     link.appendChild(h3)
 
     const price = document.createElement('p')
@@ -43,11 +42,9 @@ export default async function Home() {
     const btn = document.createElement('button')
     btn.classList.add('primary-btn', 'add-to-cart-btn')
     btn.textContent = 'Agregar al carrito'
-    btn.onclick = async () => {
-      const res = await fetch(`https://fakestoreapi.com/products/${p.id}`)
-      const producto = await res.json()
-      agregarAlCarrito(producto)
-      mostrarControlesCantidad(btn, producto.id)
+    btn.onclick = () => {
+      agregarAlCarrito(p)
+      mostrarControlesCantidad(btn, p.id)
     }
 
     card.appendChild(img)
@@ -55,8 +52,9 @@ export default async function Home() {
     card.appendChild(price)
     card.appendChild(btn)
 
-    const yaEncarrito = carrito.some((item) => item.id === p.id)
-    if (yaEncarrito) {
+    // Si ya está en el carrito, mostrar controles
+    const yaEnCarrito = carrito.some((item) => item.id === p.id)
+    if (yaEnCarrito) {
       mostrarControlesCantidad(btn, p.id)
     }
 
@@ -66,10 +64,11 @@ export default async function Home() {
   container.appendChild(grid)
   document.getElementById('app').innerHTML = ''
   document.getElementById('app').appendChild(container)
+
+  // Escuchar actualizaciones de cantidad desde otras vistas
   document.addEventListener('cantidad-cambiada', (e) => {
     const { id, cantidad } = e.detail
 
-    // Buscar el control que tenga data-id igual al producto
     const card = document.querySelector(`.card[data-id="${id}"]`)
     if (!card) return
 
@@ -79,17 +78,18 @@ export default async function Home() {
         span.textContent = cantidad
       } else {
         // Volver al botón original si la cantidad llega a 0
-        const contenedor = span.parentElement.parentElement // .controles-cantidad
+        const contenedor = span.parentElement.parentElement
         contenedor.innerHTML = ''
 
         const btn = document.createElement('button')
         btn.classList.add('primary-btn', 'add-to-cart-btn')
         btn.textContent = 'Agregar al carrito'
-        btn.onclick = async () => {
-          const res = await fetch(`https://fakestoreapi.com/products/${id}`)
-          const producto = await res.json()
-          agregarAlCarrito(producto)
-          mostrarControlesCantidad(btn, producto.id)
+        btn.onclick = () => {
+          const producto = productos.find((p) => p.id === id)
+          if (producto) {
+            agregarAlCarrito(producto)
+            mostrarControlesCantidad(btn, producto.id)
+          }
         }
 
         contenedor.appendChild(btn)

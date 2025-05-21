@@ -29,6 +29,11 @@ export async function eliminarProducto(id) {
     if (window.location.pathname === '/carrito') {
       router()
     }
+    document.dispatchEvent(
+      new CustomEvent('cantidad-cambiada', {
+        detail: { id, cantidad: 0 },
+      })
+    )
   }
 
   if (li) {
@@ -100,6 +105,11 @@ export async function restarCantidad(id) {
     if (window.location.pathname === '/carrito') {
       router()
     }
+    document.dispatchEvent(
+      new CustomEvent('cantidad-cambiada', {
+        detail: { id, cantidad: item.quantity },
+      })
+    )
   } else {
     await eliminarProducto(id)
   }
