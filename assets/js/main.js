@@ -7,7 +7,6 @@ import { initCerrarCarritoAlClickAfuera } from './utils/clickFueraDeCarrito.js'
 import { initEnlaceVerCarrito } from './utils/enlaceVerCarrito.js'
 
 const path = window.location.pathname
-console.log('render')
 
 if (path === '/index.html' || path === '/index') {
   history.replaceState(null, '', '/')

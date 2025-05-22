@@ -15,6 +15,8 @@ export default async function Home() {
   ])
 
   const productosOriginales = [...productos]
+  let textoBusqueda = ''
+  let resultadosAnteriores = []
 
   const container = document.createElement('section')
 
@@ -25,7 +27,6 @@ export default async function Home() {
   const title = document.createElement('h1')
   title.textContent = 'Productos'
 
-  let textoBusqueda = ''
   const buscador = crearBuscador((valor) => {
     textoBusqueda = valor
     manejarCambios()
@@ -49,7 +50,7 @@ export default async function Home() {
   grid.className = 'productos-grid'
   container.appendChild(grid)
 
-  // Lógica de renderizado con filtros + búsqueda
+  // Lógica principal de render
   function manejarCambios() {
     const categoria = filtroCategoria.value
     const orden = ordenSelect.value
@@ -60,12 +61,30 @@ export default async function Home() {
       orden
     )
 
-    if (textoBusqueda.trim() !== '') {
+    if (textoBusqueda.trim()) {
       listaFiltrada = listaFiltrada.filter((p) =>
         p.title.toLowerCase().includes(textoBusqueda)
       )
     }
 
+    if (listaFiltrada.length === 0) {
+      grid.innerHTML = ''
+      const mensaje = document.createElement('p')
+      mensaje.className = 'sin-resultados'
+      mensaje.textContent = '😔 No se encontraron productos con ese nombre.'
+      grid.appendChild(mensaje)
+      resultadosAnteriores = []
+      return
+    }
+
+    const nuevosIds = listaFiltrada.map((p) => p.id).join(',')
+    const anterioresIds = resultadosAnteriores.map((p) => p.id).join(',')
+
+    if (nuevosIds === anterioresIds) {
+      return // No cambios, evitar render
+    }
+
+    resultadosAnteriores = [...listaFiltrada]
     renderizarProductos(listaFiltrada, grid)
   }
 
