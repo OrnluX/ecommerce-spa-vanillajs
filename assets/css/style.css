@@ -581,7 +581,7 @@ h1 {
 }
 
 /* Estilos pagina ProductDetail*/
-.producto-detalle {
+/* .producto-detalle {
   max-width: 900px;
   margin: 2rem auto;
   padding: 1rem;
@@ -608,7 +608,7 @@ h1 {
 .detalle-precio {
   font-size: 1.2rem;
   margin: 1rem 0;
-}
+} */
 
 /*Estilos pagina carrito*/
 .pagina-carrito {
@@ -690,6 +690,73 @@ lista-carrito {
   font-weight: bold;
   border-top: 2px solid var(--contrast-color);
   padding-top: 1rem;
+}
+
+/* Ventana Modal*/
+.modal {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+  animation: aparecer 0.2s ease-out;
+}
+
+.modal-contenido {
+  background-color: var(--card-bg);
+  padding: 2rem;
+  border-radius: 1rem;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+.modal.oculto {
+  display: none;
+}
+
+.detalle-contenido {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.detalle-imagen {
+  background-color: #222;
+  width: 40%;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 0.5rem;
+}
+
+.detalle-precio {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.detalle-descripcion {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text-color);
+}
+
+/* Animación de entrada */
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* Estilos responsive */

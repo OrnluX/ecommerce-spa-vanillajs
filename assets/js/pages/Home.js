@@ -86,5 +86,5 @@ export default async function Home() {
   document.getElementById('app').innerHTML = ''
   document.getElementById('app').appendChild(container)
 
-  iniciarListenerCantidad()
+  iniciarListenerCantidad(productosOriginales)
 }
