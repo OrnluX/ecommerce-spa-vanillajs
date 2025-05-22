@@ -1,47 +1,15 @@
-// import { agregarAlCarrito } from '../state.js'
-
-// export default async function ProductDetail({ id }) {
-//   const res = await fetch(`https://fakestoreapi.com/products/${id}`)
-
-//   if (!res.ok) {
-//     document.getElementById('app').innerHTML = '<p>Producto no encontrado.</p>'
-//     return
-//   }
-
-//   const producto = await res.json()
-
-//   const container = document.createElement('section')
-//   container.className = 'producto-detalle'
-
-//   container.innerHTML = `
-//     <div class="detalle-contenido">
-//       <img src="${producto.image}" alt="${producto.title}" class="detalle-imagen" />
-//       <div class="detalle-info">
-//         <h1>${producto.title}</h1>
-//         <p class="detalle-descripcion">${producto.description}</p>
-//         <p class="detalle-precio"><strong>$${producto.price}</strong></p>
-//         <button class="primary-btn" id="btn-agregar">Agregar al carrito</button>
-//       </div>
-//     </div>
-//   `
-
-//   const app = document.getElementById('app')
-//   app.innerHTML = ''
-//   app.appendChild(container)
-
-//   document.getElementById('btn-agregar').addEventListener('click', () => {
-//     agregarAlCarrito(producto)
-//   })
-// }
-
-import { agregarAlCarrito } from '../state.js'
+import { carrito, agregarAlCarrito } from '../state.js'
 
 export default async function ProductDetail({ id }, contenedorExterno = null) {
   const res = await fetch(`https://fakestoreapi.com/products/${id}`)
 
+  const destino = contenedorExterno || document.getElementById('app')
+  destino.innerHTML = ''
+
   if (!res.ok) {
-    const destino = contenedorExterno || document.getElementById('app')
-    destino.innerHTML = '<p>Producto no encontrado.</p>'
+    const error = document.createElement('p')
+    error.textContent = 'Producto no encontrado.'
+    destino.appendChild(error)
     return
   }
 
@@ -50,41 +18,67 @@ export default async function ProductDetail({ id }, contenedorExterno = null) {
   const container = document.createElement('section')
   container.className = 'producto-detalle'
 
-  container.innerHTML = `
-    <div class="detalle-contenido">
-      <img src="${producto.image}" alt="${
-    producto.title
-  }" class="detalle-imagen" />
-      <div class="detalle-info">
-        <h1>${producto.title}</h1>
-        <p class="detalle-descripcion">${producto.description}</p>
-        <p class="detalle-precio"><strong>$${producto.price}</strong></p>
-        <button class="primary-btn" id="btn-agregar">Agregar al carrito</button>
-        ${
-          contenedorExterno
-            ? '<button class="primary-btn cerrar-modal">Cerrar</button>'
-            : ''
-        }
-      </div>
-    </div>
-  `
+  const contenido = document.createElement('div')
+  contenido.className = 'detalle-contenido'
 
-  const destino = contenedorExterno || document.getElementById('app')
-  destino.innerHTML = ''
-  destino.appendChild(container)
+  const img = document.createElement('img')
+  img.src = producto.image
+  img.alt = producto.title
+  img.className = 'detalle-imagen'
 
-  container.querySelector('#btn-agregar').addEventListener('click', () => {
+  const info = document.createElement('div')
+  info.className = 'detalle-info'
+
+  const h1 = document.createElement('h1')
+  h1.textContent = producto.title
+
+  const descripcion = document.createElement('p')
+  descripcion.className = 'detalle-descripcion'
+  descripcion.textContent = producto.description
+
+  const precio = document.createElement('p')
+  precio.className = 'detalle-precio'
+  precio.innerHTML = `<strong>$${producto.price}</strong>`
+
+  const btnAgregar = document.createElement('button')
+  btnAgregar.className = 'primary-btn'
+  btnAgregar.id = 'btn-agregar'
+  btnAgregar.textContent = 'Agregar al carrito'
+
+  btnAgregar.addEventListener('click', () => {
     agregarAlCarrito(producto)
+
+    const productoEnCarrito = carrito.find((p) => p.id === producto.id)
+    const cantidad = productoEnCarrito?.quantity || 1
+
+    const evento = new CustomEvent('cantidad-cambiada', {
+      detail: { id: producto.id, cantidad },
+    })
+    document.dispatchEvent(evento)
   })
 
-  // Cierre del modal si aplica
+  info.appendChild(h1)
+  info.appendChild(descripcion)
+  info.appendChild(precio)
+  info.appendChild(btnAgregar)
+
+  // Si es modal, agregamos botón cerrar
   if (contenedorExterno) {
-    container.querySelector('.cerrar-modal').addEventListener('click', () => {
+    const btnCerrar = document.createElement('button')
+    btnCerrar.className = 'primary-btn cerrar-modal'
+    btnCerrar.textContent = 'Cerrar'
+    btnCerrar.addEventListener('click', () => {
       const modal = document.getElementById('modal-producto')
       if (modal) {
         modal.classList.add('oculto')
         modal.querySelector('.modal-contenido').innerHTML = ''
       }
     })
+    info.appendChild(btnCerrar)
   }
+
+  contenido.appendChild(img)
+  contenido.appendChild(info)
+  container.appendChild(contenido)
+  destino.appendChild(container)
 }

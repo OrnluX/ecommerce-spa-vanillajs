@@ -36,7 +36,7 @@ export function mostrarControlesCantidad(btn, productoId) {
     const nuevaCantidad = obtenerCantidadActual(productoId)
     cantidad.textContent = nuevaCantidad
 
-    // 🔁 Actualizar ícono dinámicamente
+    // Actualizar ícono dinámicamente
     iconoMenos.className =
       nuevaCantidad === 1 ? 'fas fa-trash-alt' : 'fa-solid fa-square-minus'
     btnMenos.setAttribute(

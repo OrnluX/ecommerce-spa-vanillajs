@@ -1,4 +1,4 @@
-import ProductDetail from '../pages/ProductDetail.js'
+import ProductDetail from '../../pages/ProductDetail.js'
 
 export async function abrirModalProducto(id) {
   let modal = document.getElementById('modal-producto')

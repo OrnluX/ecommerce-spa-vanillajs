@@ -3,6 +3,8 @@ import {
   aplicarFiltrosYOrden,
   renderizarProductos,
 } from '../utils/filtrosYOrden.js'
+import { crearFiltrosOrden } from '../components/common/FiltrosOrden.js'
+import { crearBuscador } from '../components/common/Buscador.js'
 
 export default async function Home() {
   const [productos, categorias] = await Promise.all([
@@ -15,49 +17,31 @@ export default async function Home() {
   const productosOriginales = [...productos]
 
   const container = document.createElement('section')
+
+  // Encabezado con título y buscador
+  const header = document.createElement('div')
+  header.className = 'productos-header'
+
   const title = document.createElement('h1')
   title.textContent = 'Productos'
-  container.appendChild(title)
 
-  // Contenedor de filtros
-  const filtrosContainer = document.createElement('div')
-  filtrosContainer.className = 'filtros-container'
-
-  // Filtro por categoría
-  const filtroCategoria = document.createElement('select')
-  filtroCategoria.className = 'filtro-categoria'
-
-  const todasOption = document.createElement('option')
-  todasOption.value = 'todos'
-  todasOption.textContent = 'Todas las categorías'
-  filtroCategoria.appendChild(todasOption)
-
-  categorias.forEach((cat) => {
-    const opt = document.createElement('option')
-    opt.value = cat
-    opt.textContent = cat[0].toUpperCase() + cat.slice(1)
-    filtroCategoria.appendChild(opt)
+  let textoBusqueda = ''
+  const buscador = crearBuscador((valor) => {
+    textoBusqueda = valor
+    manejarCambios()
   })
 
-  // Selector de orden
-  const ordenSelect = document.createElement('select')
-  ordenSelect.className = 'orden-select'
+  header.appendChild(title)
+  header.appendChild(buscador)
+  container.appendChild(header)
 
-  const opcionesOrden = [
-    { value: 'relevancia', label: 'Relevancia' },
-    { value: 'menor', label: 'Precio: menor a mayor' },
-    { value: 'mayor', label: 'Precio: mayor a menor' },
-  ]
+  // Filtros
+  const {
+    contenedor: filtrosContainer,
+    filtroCategoria,
+    ordenSelect,
+  } = crearFiltrosOrden(categorias)
 
-  opcionesOrden.forEach((opt) => {
-    const option = document.createElement('option')
-    option.value = opt.value
-    option.textContent = opt.label
-    ordenSelect.appendChild(option)
-  })
-
-  filtrosContainer.appendChild(filtroCategoria)
-  filtrosContainer.appendChild(ordenSelect)
   container.appendChild(filtrosContainer)
 
   // Grid de productos
@@ -65,22 +49,29 @@ export default async function Home() {
   grid.className = 'productos-grid'
   container.appendChild(grid)
 
-  // Aplicar filtros y orden
+  // Lógica de renderizado con filtros + búsqueda
   function manejarCambios() {
     const categoria = filtroCategoria.value
     const orden = ordenSelect.value
-    const listaFiltrada = aplicarFiltrosYOrden(
+
+    let listaFiltrada = aplicarFiltrosYOrden(
       productosOriginales,
       categoria,
       orden
     )
+
+    if (textoBusqueda.trim() !== '') {
+      listaFiltrada = listaFiltrada.filter((p) =>
+        p.title.toLowerCase().includes(textoBusqueda)
+      )
+    }
+
     renderizarProductos(listaFiltrada, grid)
   }
 
   filtroCategoria.addEventListener('change', manejarCambios)
   ordenSelect.addEventListener('change', manejarCambios)
 
-  // Primer render
   renderizarProductos(productosOriginales, grid)
 
   document.getElementById('app').innerHTML = ''
