@@ -1,8 +1,13 @@
-import { router } from './router.js'
+import { renderPanel } from './utils/renderPanelCarrito.js'
 
 export let carrito = JSON.parse(localStorage.getItem('carrito')) || []
 
-//Agregar producto al carrito
+/**
+ * @function agregarAlCarrito
+ * @param {Object} producto - El producto a agregar al carrito
+ * @returns {void}
+ * @description Agrega un producto al carrito. Si el producto ya existe, aumenta la cantidad.
+ */
 export function agregarAlCarrito(producto) {
   const index = carrito.findIndex((item) => item.id === producto.id)
   if (index !== -1) {
@@ -15,11 +20,15 @@ export function agregarAlCarrito(producto) {
   renderPanel()
 }
 
-//Eliminar producto del carrito
+/**
+ * @function eliminarProducto
+ * @param {number} id - El ID del producto a eliminar
+ * @returns {Promise<void>}
+ * @description Elimina un producto del carrito. Si el producto no existe, no hace nada.
+ */
 export async function eliminarProducto(id) {
   const producto = carrito.find((item) => item.id === id)
   const li = document.querySelector(`li[data-id="${id}"]`)
-
   const eliminar = () => {
     carrito = carrito.filter((item) => item.id !== id)
     guardarCarrito()
@@ -46,19 +55,32 @@ export async function eliminarProducto(id) {
   }
 }
 
-//Guardar carrito en localStorage
+/**
+ * @function guardarCarrito
+ * @returns {void}
+ * @description Guarda el carrito en el localStorage y actualiza el contador
+ * No exporta la función, ya que se usa solo dentro de este módulo
+ */
 function guardarCarrito() {
   localStorage.setItem('carrito', JSON.stringify(carrito))
   actualizarContador()
 }
 
-//Actualizar contador del carrito
+/**
+ * @function actualizarContador
+ * @returns {void}
+ * @description Actualiza el contador de productos en el carrito
+ */
 export function actualizarContador() {
   const total = carrito.reduce((sum, item) => sum + item.quantity, 0)
   document.getElementById('contador-carrito').textContent = total
 }
 
-// Inicializar el panel del carrito
+/**
+ * @function initPanelCarrito
+ * @returns {void}
+ * @description Inicializa el panel del carrito
+ */
 export function initPanelCarrito() {
   const btnAbrir = document.getElementById('carrito-boton')
   const panel = document.getElementById('carrito-panel')
@@ -75,7 +97,11 @@ export function initPanelCarrito() {
   })
 }
 
-//Sumar cantidad
+/**
+ * @function cerrarPanelCarrito
+ * @returns {void}
+ * @description Cierra el panel del carrito
+ */
 export function sumarCantidad(id) {
   const item = carrito.find((p) => p.id === id)
   if (item) item.quantity += 1
@@ -88,8 +114,12 @@ export function sumarCantidad(id) {
   )
 }
 
-//Restar cantidad
-
+/**
+ * @function restarCantidad
+ * @param {number} id - El ID del producto a restar
+ * @returns {Promise<void>}
+ * @description Resta una unidad a la cantidad de un producto en el carrito. Si la cantidad llega a 0, elimina el producto del carrito.
+ */
 export async function restarCantidad(id) {
   const item = carrito.find((p) => p.id === id)
   if (!item) return
@@ -97,7 +127,8 @@ export async function restarCantidad(id) {
   item.quantity -= 1
 
   if (item.quantity <= 0) {
-    carrito = carrito.filter((p) => p.id !== id)
+    await eliminarProducto(id)
+    return
   }
 
   guardarCarrito()
@@ -109,110 +140,12 @@ export async function restarCantidad(id) {
   )
 }
 
-//Renderizar el panel del carrito
-
-function renderPanel() {
-  const lista = document.getElementById('carrito-lista')
-  const total = document.getElementById('total-carrito')
-  const vacio = document.getElementById('carrito-vacio')
-  const botonesCarrito = document.querySelectorAll('.carrito-btn')
-
-  lista.innerHTML = '' // Limpiar la lista antes de renderizar
-
-  if (carrito.length === 0) {
-    vacio.style.display = 'block'
-    total.classList.add('oculto')
-    botonesCarrito.forEach((btn) => btn.classList.add('oculto'))
-    total.textContent = 'Total: $0.00'
-  } else {
-    vacio.style.display = 'none'
-    total.classList.remove('oculto')
-    botonesCarrito.forEach((btn) => btn.classList.remove('oculto'))
-
-    let suma = 0
-
-    carrito.forEach((producto) => {
-      suma += producto.price * producto.quantity
-
-      const li = document.createElement('li')
-      li.className = 'carrito-item'
-      li.setAttribute('data-id', producto.id)
-
-      const img = document.createElement('img')
-      img.src = producto.image
-      img.alt = producto.title
-      img.className = 'miniatura'
-
-      const detalles = document.createElement('div')
-      detalles.className = 'carrito-detalles'
-
-      const nombre = document.createElement('a')
-      nombre.className = 'nombre'
-      nombre.href = `/producto/${producto.id}`
-      nombre.setAttribute('data-link', '')
-      nombre.textContent = producto.title
-
-      const precio = document.createElement('p')
-      precio.className = 'precio'
-      precio.textContent = `$${producto.price.toFixed(2)}`
-
-      const controles = document.createElement('div')
-      controles.className = 'controles-cantidad'
-
-      // Botón restar o eliminar
-      const btnRestar = document.createElement('button')
-      btnRestar.className = 'btn-cantidad restar'
-      btnRestar.setAttribute('aria-label', 'Restar cantidad')
-      const iconoRestar = document.createElement('i')
-      iconoRestar.className =
-        producto.quantity > 1 ? 'fa-solid fa-square-minus' : 'fas fa-trash-alt'
-      btnRestar.appendChild(iconoRestar)
-      btnRestar.onclick = () => {
-        producto.quantity > 1
-          ? restarCantidad(producto.id)
-          : eliminarProducto(producto.id)
-      }
-
-      const cantidad = document.createElement('span')
-      cantidad.className = 'cantidad'
-      cantidad.textContent = producto.quantity
-
-      const btnSumar = document.createElement('button')
-      btnSumar.className = 'btn-cantidad sumar'
-      btnSumar.setAttribute('aria-label', 'Sumar cantidad')
-      const iconoSumar = document.createElement('i')
-      iconoSumar.className = 'fa-solid fa-square-plus'
-      btnSumar.appendChild(iconoSumar)
-      btnSumar.onclick = () => sumarCantidad(producto.id)
-
-      controles.appendChild(btnRestar)
-      controles.appendChild(cantidad)
-      controles.appendChild(btnSumar)
-
-      detalles.appendChild(nombre)
-      detalles.appendChild(precio)
-      detalles.appendChild(controles)
-
-      const btnEliminar = document.createElement('button')
-      btnEliminar.className = 'btn-cantidad eliminar'
-      btnEliminar.setAttribute('aria-label', 'Eliminar producto')
-      const iconoEliminar = document.createElement('i')
-      iconoEliminar.className = 'fas fa-trash-alt'
-      btnEliminar.appendChild(iconoEliminar)
-      btnEliminar.onclick = () => eliminarProducto(producto.id)
-
-      li.appendChild(img)
-      li.appendChild(detalles)
-      li.appendChild(btnEliminar)
-
-      lista.appendChild(li)
-    })
-
-    total.textContent = `Total: $${suma.toFixed(2)}`
-  }
-}
-
-// Notificación toast
+/**
+ * @function mostrarToast
+ * @param {string} msg - El mensaje a mostrar
+ * @param {string} tipo - El tipo de mensaje (info, agregado, eliminado)
+ * @description Muestra un toast con el mensaje y tipo especificado
+ */
 export function mostrarToast(msg, tipo = 'info') {
   const cont = document.getElementById('toast-container')
 

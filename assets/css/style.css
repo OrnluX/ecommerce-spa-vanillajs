@@ -229,7 +229,7 @@ h1 {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1.2rem;
-  padding: 2rem;
+  padding: 1.5rem;
 }
 
 .card {
@@ -489,6 +489,42 @@ h1 {
   border-left: 4px solid #e74c3c; /* rojo */
 }
 
+/*Filtros y categorias*/
+.filtros-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 1rem 0;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 1.5rem;
+}
+
+.filtro-categoria,
+.orden-select {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  border: 2px solid var(--primary-color);
+  border-radius: 8px;
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.filtro-categoria:hover,
+.orden-select:hover {
+  border-color: var(--primary-variant);
+}
+
+.filtro-categoria:focus,
+.orden-select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px var(--shadow);
+}
+
 /*Animaciones*/
 @keyframes fadeInOut {
   0% {
@@ -580,7 +616,7 @@ h1 {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  padding: 0 1rem 0 1rem;
+  padding: 1rem;
 }
 
 .pagina-carrito h1 {
@@ -607,9 +643,9 @@ lista-carrito {
   height: 80px;
   object-fit: contain;
 }
-.item-carrito div {
+/* .item-carrito div {
   flex: 1;
-}
+} */
 
 .item-carrito a {
   font-weight: bold;
@@ -625,17 +661,26 @@ lista-carrito {
   margin: 0.25rem 0;
 }
 
-.item-carrito div button {
-  margin-right: 0.5rem;
-  background: #f0f0f0;
-  border: 1px solid #ccc;
-  padding: 0.3rem 0.6rem;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
 .item-carrito div button:hover {
   background: #e0e0e0;
+}
+
+.carrito-info {
+  flex: 1;
+}
+
+.carrito-info .controles-cantidad {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 100px;
+  background-color: var(--contrast-text);
+}
+
+.carrito-info .controles-cantidad .btn-cantidad {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Total */
@@ -658,7 +703,6 @@ lista-carrito {
     margin: 0 auto;
     max-width: 650px;
     padding: 1rem;
-    gap: 0.5rem;
   }
 
   .card img {
@@ -700,6 +744,11 @@ lista-carrito {
     right: 0;
   }
 
+  .filtros-container {
+    margin: 0 auto;
+    padding: 0 1rem;
+    justify-content: center;
+  }
   /*Pagina carrito*/
   /* .item-carrito {
     flex-direction: column;

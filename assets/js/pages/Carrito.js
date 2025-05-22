@@ -9,6 +9,7 @@ import { iniciarListenerCarrito } from '../utils/listenerCarrito.js'
 export default function CarritoPage() {
   const section = document.createElement('section')
   section.className = 'pagina-carrito'
+  section.setAttribute('aria-live', 'polite')
 
   const title = document.createElement('h1')
   title.textContent = 'Tu carrito'
@@ -35,6 +36,7 @@ export default function CarritoPage() {
       img.className = 'miniatura'
 
       const info = document.createElement('div')
+      info.className = 'carrito-info'
 
       const nombre = document.createElement('a')
       nombre.href = `/producto/${producto.id}`
@@ -44,15 +46,29 @@ export default function CarritoPage() {
       const precio = document.createElement('p')
       precio.textContent = `$${producto.price.toFixed(2)}`
 
-      const cantidad = document.createElement('p')
-      cantidad.textContent = `Cantidad: ${producto.quantity}`
+      const textoCantidad = document.createElement('p')
+      textoCantidad.className = 'resumen-cantidad'
+      textoCantidad.textContent = `Cantidad: ${producto.quantity}`
 
       const controles = document.createElement('div')
+      controles.className = 'controles-cantidad'
 
+      // Botón restar
       const btnMenos = document.createElement('button')
-      btnMenos.textContent = '-'
+      btnMenos.className = 'btn-cantidad restar'
+      const iconoMenos = document.createElement('i')
+      iconoMenos.className =
+        producto.quantity === 1
+          ? 'fas fa-trash-alt'
+          : 'fa-solid fa-square-minus'
+      iconoMenos.setAttribute('aria-hidden', 'true')
+      btnMenos.setAttribute(
+        'aria-label',
+        producto.quantity === 1 ? 'Eliminar producto' : 'Restar cantidad'
+      )
+      btnMenos.appendChild(iconoMenos)
+
       btnMenos.onclick = async () => {
-        producto.quantity > 1
         if (producto.quantity > 1) {
           restarCantidad(producto.id)
         } else {
@@ -60,32 +76,54 @@ export default function CarritoPage() {
         }
       }
 
+      // Span cantidad entre botones
+      const spanCantidad = document.createElement('span')
+      spanCantidad.className = 'cantidad'
+      spanCantidad.textContent = producto.quantity
+
+      // Botón sumar
       const btnMas = document.createElement('button')
-      btnMas.textContent = '+'
+      btnMas.className = 'btn-cantidad sumar'
+      btnMas.setAttribute('aria-label', 'Sumar cantidad')
+      const iconoMas = document.createElement('i')
+      iconoMas.className = 'fa-solid fa-square-plus'
+      iconoMas.setAttribute('aria-hidden', 'true')
+      btnMas.appendChild(iconoMas)
+
       btnMas.onclick = () => {
         sumarCantidad(producto.id)
       }
 
+      controles.appendChild(btnMenos)
+      controles.appendChild(spanCantidad)
+      controles.appendChild(btnMas)
+
+      // Botón eliminar completo
       const btnEliminar = document.createElement('button')
-      btnEliminar.textContent = 'Eliminar'
+      btnEliminar.className = 'primary-btn eliminar'
+      btnEliminar.setAttribute('aria-label', 'Eliminar producto')
+      const iconoEliminar = document.createElement('i')
+      iconoEliminar.className = 'fas fa-trash-alt'
+      iconoEliminar.setAttribute('aria-hidden', 'true')
+      btnEliminar.appendChild(iconoEliminar)
       btnEliminar.onclick = async () => {
         await eliminarProducto(producto.id)
       }
 
-      controles.appendChild(btnMenos)
-      controles.appendChild(btnMas)
-      controles.appendChild(btnEliminar)
-
       info.appendChild(nombre)
       info.appendChild(precio)
-      info.appendChild(cantidad)
+      info.appendChild(textoCantidad)
       info.appendChild(controles)
 
       li.appendChild(img)
       li.appendChild(info)
+      li.appendChild(btnEliminar)
+
       lista.appendChild(li)
 
-      total += producto.price * producto.quantity
+      const item = carrito.find((p) => p.id === producto.id)
+      const cantidad = item?.quantity || 1
+      total += producto.price * cantidad
     })
 
     const resumen = document.createElement('p')

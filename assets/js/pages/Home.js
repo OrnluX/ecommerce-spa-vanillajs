@@ -1,70 +1,90 @@
-import { agregarAlCarrito, carrito } from '../state.js'
-import { mostrarControlesCantidad } from '../utils/controlesCantidad.js'
 import { iniciarListenerCantidad } from '../utils/listenerCantidad.js'
+import {
+  aplicarFiltrosYOrden,
+  renderizarProductos,
+} from '../utils/filtrosYOrden.js'
 
 export default async function Home() {
-  const res = await fetch('https://fakestoreapi.com/products')
-  const productos = await res.json()
+  const [productos, categorias] = await Promise.all([
+    fetch('https://fakestoreapi.com/products').then((res) => res.json()),
+    fetch('https://fakestoreapi.com/products/categories').then((res) =>
+      res.json()
+    ),
+  ])
+
+  const productosOriginales = [...productos]
 
   const container = document.createElement('section')
   const title = document.createElement('h1')
   title.textContent = 'Productos'
   container.appendChild(title)
 
-  const grid = document.createElement('div')
-  grid.className = 'productos-grid'
+  // Contenedor de filtros
+  const filtrosContainer = document.createElement('div')
+  filtrosContainer.className = 'filtros-container'
 
-  productos.forEach((p, index) => {
-    const card = document.createElement('div')
-    card.className = 'card'
-    card.setAttribute('data-id', p.id)
-    card.style.animationDelay = `${index * 0.05}s`
+  // Filtro por categoría
+  const filtroCategoria = document.createElement('select')
+  filtroCategoria.className = 'filtro-categoria'
 
-    const img = document.createElement('img')
-    img.src = p.image
-    img.alt = p.title
+  const todasOption = document.createElement('option')
+  todasOption.value = 'todos'
+  todasOption.textContent = 'Todas las categorías'
+  filtroCategoria.appendChild(todasOption)
 
-    const link = document.createElement('a')
-    link.href = `/producto/${p.id}`
-    link.setAttribute('data-link', '')
-    link.className = 'card-link'
-
-    const h3 = document.createElement('h3')
-    h3.textContent = p.title
-    link.appendChild(h3)
-
-    const price = document.createElement('p')
-    price.className = 'price'
-    price.textContent = p.price.toLocaleString('es-AR', {
-      style: 'currency',
-      currency: 'ARS',
-    })
-
-    const btn = document.createElement('button')
-    btn.classList.add('primary-btn', 'add-to-cart-btn')
-    btn.textContent = 'Agregar al carrito'
-    btn.onclick = () => {
-      agregarAlCarrito(p)
-      mostrarControlesCantidad(btn, p.id)
-    }
-
-    card.appendChild(img)
-    card.appendChild(link)
-    card.appendChild(price)
-    card.appendChild(btn)
-
-    // Si ya está en el carrito, mostrar controles
-    const yaEnCarrito = carrito.some((item) => item.id === p.id)
-    if (yaEnCarrito) {
-      mostrarControlesCantidad(btn, p.id)
-    }
-
-    grid.appendChild(card)
+  categorias.forEach((cat) => {
+    const opt = document.createElement('option')
+    opt.value = cat
+    opt.textContent = cat[0].toUpperCase() + cat.slice(1)
+    filtroCategoria.appendChild(opt)
   })
 
+  // Selector de orden
+  const ordenSelect = document.createElement('select')
+  ordenSelect.className = 'orden-select'
+
+  const opcionesOrden = [
+    { value: 'relevancia', label: 'Relevancia' },
+    { value: 'menor', label: 'Precio: menor a mayor' },
+    { value: 'mayor', label: 'Precio: mayor a menor' },
+  ]
+
+  opcionesOrden.forEach((opt) => {
+    const option = document.createElement('option')
+    option.value = opt.value
+    option.textContent = opt.label
+    ordenSelect.appendChild(option)
+  })
+
+  filtrosContainer.appendChild(filtroCategoria)
+  filtrosContainer.appendChild(ordenSelect)
+  container.appendChild(filtrosContainer)
+
+  // Grid de productos
+  const grid = document.createElement('div')
+  grid.className = 'productos-grid'
   container.appendChild(grid)
+
+  // Aplicar filtros y orden
+  function manejarCambios() {
+    const categoria = filtroCategoria.value
+    const orden = ordenSelect.value
+    const listaFiltrada = aplicarFiltrosYOrden(
+      productosOriginales,
+      categoria,
+      orden
+    )
+    renderizarProductos(listaFiltrada, grid)
+  }
+
+  filtroCategoria.addEventListener('change', manejarCambios)
+  ordenSelect.addEventListener('change', manejarCambios)
+
+  // Primer render
+  renderizarProductos(productosOriginales, grid)
+
   document.getElementById('app').innerHTML = ''
   document.getElementById('app').appendChild(container)
 
-  iniciarListenerCantidad(productos)
+  iniciarListenerCantidad()
 }
