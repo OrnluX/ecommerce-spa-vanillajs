@@ -114,6 +114,7 @@ header.scrolled {
   align-items: center;
 }
 
+/* Estilos del botón de alternancia de tema */
 .theme-switch {
   display: flex;
   align-items: center;
@@ -221,7 +222,6 @@ main {
 h1 {
   text-align: center;
   font-size: 2rem;
-  padding-bottom: 1rem;
 }
 .productos-header {
   display: flex;
@@ -255,6 +255,42 @@ h1 {
   color: var(--text-color);
 }
 
+/*menu categorias*/
+.menu-categorias {
+  position: relative;
+  display: inline-block;
+}
+
+.menu-categorias ul {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 200px;
+  background: var(--nav-bg);
+  list-style: none;
+  padding: 1rem;
+  margin: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  pointer-events: none; /* evita clics cuando está cerrado */
+}
+
+.menu-categorias.abierto ul {
+  max-height: 500px; /* suficientemente grande para 10+ ítems */
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.menu-categorias ul a {
+  display: block;
+  padding: 0.5rem;
+  text-decoration: none;
+  color: var(--text-color);
+}
 /* Productos Grid */
 .productos-grid {
   display: grid;
@@ -881,7 +917,6 @@ lista-carrito {
   .productos-header {
     gap: 1rem;
     flex-direction: column;
-    align-items: start;
   }
   .buscador-productos {
     max-width: 100%;
