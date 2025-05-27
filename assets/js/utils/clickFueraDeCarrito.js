@@ -20,7 +20,7 @@ export function initCerrarCarritoAlClickAfuera() {
       isPanelVisible
     ) {
       panel.classList.remove('visible')
-      panel.classList.add('oculto')
+      // panel.classList.add('oculto')
     }
   })
 }

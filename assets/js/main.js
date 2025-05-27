@@ -5,7 +5,8 @@ import { initPanelCarrito } from './state.js'
 import { initMobileMenu } from './utils/mobileMenu.js'
 import { initCerrarCarritoAlClickAfuera } from './utils/clickFueraDeCarrito.js'
 import { initEnlaceVerCarrito } from './utils/enlaceVerCarrito.js'
-import { inicializarMenuCategorias } from './components/inicializarMenuCategorias.js' // ✅ NUEVO
+import { inicializarMenuCategorias } from './components/inicializarMenuCategorias.js'
+import { initScrollTopButton } from './utils/initScrollTopButton.js'
 
 const path = window.location.pathname
 
@@ -32,6 +33,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   router()
   initThemeToggle(document.getElementById('theme-toggle'))
   initMobileMenu()
+  initScrollTopButton()
   initCerrarCarritoAlClickAfuera()
   initEnlaceVerCarrito()
 })

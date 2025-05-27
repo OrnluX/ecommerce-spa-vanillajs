@@ -22,13 +22,13 @@ export function renderPanel() {
 
   if (carrito.length === 0) {
     vacio.style.display = 'block'
-    total.classList.add('oculto')
-    botonesCarrito.forEach((btn) => btn.classList.add('oculto'))
+    total.classList.add('btn-oculto')
+    botonesCarrito.forEach((btn) => btn.classList.add('btn-oculto'))
     total.textContent = 'Total: $0.00'
   } else {
     vacio.style.display = 'none'
-    total.classList.remove('oculto')
-    botonesCarrito.forEach((btn) => btn.classList.remove('oculto'))
+    total.classList.remove('btn-oculto')
+    botonesCarrito.forEach((btn) => btn.classList.remove('btn-oculto'))
 
     let suma = 0
 
