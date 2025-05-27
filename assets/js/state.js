@@ -74,7 +74,16 @@ function guardarCarrito() {
  */
 export function actualizarContador() {
   const total = carrito.reduce((sum, item) => sum + item.quantity, 0)
-  document.getElementById('contador-carrito').textContent = total
+  // document.getElementById('contador-carrito').textContent = total
+  const contador = document.getElementById('contador-carrito')
+  if (!contador) return
+
+  contador.textContent = total
+  contador.classList.add('animado')
+
+  setTimeout(() => {
+    contador.classList.remove('animado')
+  }, 200)
 }
 
 /**
