@@ -11,6 +11,7 @@ export function crearTarjetaProducto(producto, index = 0) {
   const img = document.createElement('img')
   img.src = producto.image
   img.alt = producto.title
+  img.loading = 'lazy'
 
   const link = document.createElement('a')
   link.href = '#'

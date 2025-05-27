@@ -6,7 +6,28 @@ import {
 import { crearFiltrosOrden } from '../components/common/FiltrosOrden.js'
 import { crearBuscador } from '../components/common/Buscador.js'
 
-export default async function Home() {
+export default function Home() {
+  const app = document.getElementById('app')
+
+  const loader = document.createElement('div')
+  loader.className = 'loader'
+
+  const icon = document.createElement('i')
+  icon.className = 'fas fa-spinner fa-spin'
+
+  const texto = document.createElement('span')
+  texto.textContent = 'Cargando productos...'
+
+  loader.appendChild(icon)
+  loader.appendChild(texto)
+
+  app.replaceChildren(loader)
+
+  // Ejecutar la carga real después de que el loader se pinte
+  setTimeout(() => cargarProductos(app), 0)
+}
+
+async function cargarProductos(app) {
   const [productos, categorias] = await Promise.all([
     fetch('https://fakestoreapi.com/products').then((res) => res.json()),
     fetch('https://fakestoreapi.com/products/categories').then((res) =>
@@ -16,11 +37,10 @@ export default async function Home() {
 
   const productosOriginales = [...productos]
   let textoBusqueda = ''
-  let resultadosAnteriores = []
+  let productosMostrados = []
 
   const container = document.createElement('section')
 
-  // Header con título y buscador
   const header = document.createElement('div')
   header.className = 'productos-header'
 
@@ -36,7 +56,6 @@ export default async function Home() {
   header.appendChild(buscador)
   container.appendChild(header)
 
-  // Filtros
   const {
     contenedor: filtrosContainer,
     filtroCategoria,
@@ -45,12 +64,19 @@ export default async function Home() {
 
   container.appendChild(filtrosContainer)
 
-  // Grid
   const grid = document.createElement('div')
   grid.className = 'productos-grid'
   container.appendChild(grid)
 
-  // Render principal
+  function mostrarMensajeSinResultados() {
+    grid.replaceChildren()
+    const mensaje = document.createElement('p')
+    mensaje.className = 'sin-resultados'
+    mensaje.textContent = '😔 No se encontraron productos con ese nombre.'
+    grid.appendChild(mensaje)
+    productosMostrados = []
+  }
+
   function manejarCambios() {
     const categoria = filtroCategoria.value
     const orden = ordenSelect.value
@@ -68,39 +94,35 @@ export default async function Home() {
     }
 
     if (listaFiltrada.length === 0) {
-      grid.innerHTML = ''
-      const mensaje = document.createElement('p')
-      mensaje.className = 'sin-resultados'
-      mensaje.textContent = '😔 No se encontraron productos con ese nombre.'
-      grid.appendChild(mensaje)
-      resultadosAnteriores = []
+      mostrarMensajeSinResultados()
       return
     }
 
     const nuevosIds = listaFiltrada.map((p) => p.id).join(',')
-    const anterioresIds = resultadosAnteriores.map((p) => p.id).join(',')
+    const anterioresIds = productosMostrados.map((p) => p.id).join(',')
 
-    if (nuevosIds === anterioresIds) {
-      return
-    }
+    if (nuevosIds === anterioresIds) return
 
-    resultadosAnteriores = [...listaFiltrada]
+    productosMostrados = [...listaFiltrada]
     renderizarProductos(listaFiltrada, grid)
   }
 
   filtroCategoria.addEventListener('change', manejarCambios)
   ordenSelect.addEventListener('change', manejarCambios)
 
-  document.addEventListener('categoria-seleccionada', (e) => {
+  function manejarSeleccionCategoria(e) {
     const { categoria } = e.detail
     filtroCategoria.value = categoria
     manejarCambios()
-  })
+  }
+
+  document.removeEventListener(
+    'categoria-seleccionada',
+    manejarSeleccionCategoria
+  )
+  document.addEventListener('categoria-seleccionada', manejarSeleccionCategoria)
 
   renderizarProductos(productosOriginales, grid)
-
-  document.getElementById('app').innerHTML = ''
-  document.getElementById('app').appendChild(container)
-
+  app.replaceChildren(container)
   iniciarListenerCantidad(productosOriginales)
 }
