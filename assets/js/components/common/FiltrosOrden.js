@@ -1,38 +1,40 @@
-export function crearFiltrosOrden(categorias = []) {
+export function crearFiltrosOrden(categorias) {
   const contenedor = document.createElement('div')
   contenedor.className = 'filtros-container'
 
-  // Select de categoría
   const filtroCategoria = document.createElement('select')
   filtroCategoria.className = 'filtro-categoria'
 
-  const todasOption = document.createElement('option')
-  todasOption.value = 'todos'
-  todasOption.textContent = 'Todas las categorías'
-  filtroCategoria.appendChild(todasOption)
+  const opcionTodas = document.createElement('option')
+  opcionTodas.value = ''
+  opcionTodas.textContent = 'Todas'
+  filtroCategoria.appendChild(opcionTodas)
 
   categorias.forEach((cat) => {
-    const opt = document.createElement('option')
-    opt.value = cat
-    opt.textContent = cat[0].toUpperCase() + cat.slice(1)
-    filtroCategoria.appendChild(opt)
+    const opcion = document.createElement('option')
+    opcion.value = cat
+    opcion.textContent = cat
+    filtroCategoria.appendChild(opcion)
   })
 
-  // Select de orden
   const ordenSelect = document.createElement('select')
   ordenSelect.className = 'orden-select'
 
+  const opcionRelevancia = document.createElement('option')
+  opcionRelevancia.value = ''
+  opcionRelevancia.textContent = 'Relevancia'
+  ordenSelect.appendChild(opcionRelevancia)
+
   const opcionesOrden = [
-    { value: 'relevancia', label: 'Relevancia' },
-    { value: 'menor', label: 'Precio: menor a mayor' },
-    { value: 'mayor', label: 'Precio: mayor a menor' },
+    { value: 'precio-asc', text: 'Precio: menor a mayor' },
+    { value: 'precio-desc', text: 'Precio: mayor a menor' },
   ]
 
-  opcionesOrden.forEach((opt) => {
-    const option = document.createElement('option')
-    option.value = opt.value
-    option.textContent = opt.label
-    ordenSelect.appendChild(option)
+  opcionesOrden.forEach(({ value, text }) => {
+    const opt = document.createElement('option')
+    opt.value = value
+    opt.textContent = text
+    ordenSelect.appendChild(opt)
   })
 
   contenedor.appendChild(filtroCategoria)

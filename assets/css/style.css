@@ -39,6 +39,11 @@ body.dark {
   --contrast-hover: #444;
 }
 
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
 body {
   font-family: Arial, sans-serif;
   background-color: var(--bg-color);
@@ -48,7 +53,6 @@ body {
 }
 
 /* Estilos del botón de volver arriba */
-
 #btn-top {
   position: fixed;
   width: 24px;
@@ -63,7 +67,7 @@ body {
   color: var(--contrast-text);
   border: none;
   border-radius: 50%;
-  font-size: 24px;
+  font-size: 20px;
   cursor: pointer;
   opacity: 0;
   pointer-events: none;
@@ -454,6 +458,7 @@ h1 {
   padding: 1rem;
   gap: 0.5rem;
   right: 0;
+  top: 0;
   width: 320px;
   height: 100vh;
   background-color: var(--nav-bg);
@@ -465,8 +470,6 @@ h1 {
   pointer-events: none;
   z-index: 1000;
   border-left: 1px solid var(--contrast-color);
-  border-radius: 1rem;
-  top: 3px;
 }
 
 #carrito-panel.visible {

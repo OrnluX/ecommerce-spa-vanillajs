@@ -23,7 +23,6 @@ export default function Home() {
 
   app.replaceChildren(loader)
 
-  // Ejecutar la carga real después de que el loader se pinte
   setTimeout(() => cargarProductos(app), 0)
 }
 
@@ -36,8 +35,9 @@ async function cargarProductos(app) {
   ])
 
   const productosOriginales = [...productos]
-  let textoBusqueda = ''
-  let productosMostrados = []
+  const params = new URLSearchParams(window.location.search)
+  let textoBusqueda = params.get('busqueda') || ''
+  let resultadosAnteriores = []
 
   const container = document.createElement('section')
 
@@ -47,13 +47,15 @@ async function cargarProductos(app) {
   const title = document.createElement('h1')
   title.textContent = 'Productos'
 
-  const buscador = crearBuscador((valor) => {
+  const input = crearBuscador((valor) => {
     textoBusqueda = valor
+    actualizarURL()
     manejarCambios()
   })
+  input.value = textoBusqueda
 
   header.appendChild(title)
-  header.appendChild(buscador)
+  header.appendChild(input)
   container.appendChild(header)
 
   const {
@@ -64,17 +66,25 @@ async function cargarProductos(app) {
 
   container.appendChild(filtrosContainer)
 
+  // Aplicar valores de la URL después de renderizar opciones
+  setTimeout(() => {
+    filtroCategoria.value = params.get('categoria') || ''
+    ordenSelect.value = params.get('orden') || ''
+    manejarCambios()
+  }, 0)
+
   const grid = document.createElement('div')
   grid.className = 'productos-grid'
   container.appendChild(grid)
 
-  function mostrarMensajeSinResultados() {
-    grid.replaceChildren()
-    const mensaje = document.createElement('p')
-    mensaje.className = 'sin-resultados'
-    mensaje.textContent = '😔 No se encontraron productos con ese nombre.'
-    grid.appendChild(mensaje)
-    productosMostrados = []
+  function actualizarURL() {
+    const query = new URLSearchParams()
+    if (textoBusqueda) query.set('busqueda', textoBusqueda)
+    if (filtroCategoria.value) query.set('categoria', filtroCategoria.value)
+    if (ordenSelect.value) query.set('orden', ordenSelect.value)
+
+    const nuevaURL = `${window.location.pathname}?${query.toString()}`
+    history.replaceState(null, '', nuevaURL)
   }
 
   function manejarCambios() {
@@ -94,35 +104,43 @@ async function cargarProductos(app) {
     }
 
     if (listaFiltrada.length === 0) {
-      mostrarMensajeSinResultados()
+      grid.innerHTML = ''
+      const mensaje = document.createElement('p')
+      mensaje.className = 'sin-resultados'
+      mensaje.textContent = '😔 No se encontraron productos con ese nombre.'
+      grid.appendChild(mensaje)
+      resultadosAnteriores = []
       return
     }
 
     const nuevosIds = listaFiltrada.map((p) => p.id).join(',')
-    const anterioresIds = productosMostrados.map((p) => p.id).join(',')
+    const anterioresIds = resultadosAnteriores.map((p) => p.id).join(',')
 
     if (nuevosIds === anterioresIds) return
 
-    productosMostrados = [...listaFiltrada]
+    resultadosAnteriores = [...listaFiltrada]
     renderizarProductos(listaFiltrada, grid)
   }
 
-  filtroCategoria.addEventListener('change', manejarCambios)
-  ordenSelect.addEventListener('change', manejarCambios)
+  filtroCategoria.addEventListener('change', () => {
+    actualizarURL()
+    manejarCambios()
+  })
 
-  function manejarSeleccionCategoria(e) {
+  ordenSelect.addEventListener('change', () => {
+    actualizarURL()
+    manejarCambios()
+  })
+
+  document.addEventListener('categoria-seleccionada', (e) => {
     const { categoria } = e.detail
     filtroCategoria.value = categoria
+    actualizarURL()
     manejarCambios()
-  }
-
-  document.removeEventListener(
-    'categoria-seleccionada',
-    manejarSeleccionCategoria
-  )
-  document.addEventListener('categoria-seleccionada', manejarSeleccionCategoria)
+  })
 
   renderizarProductos(productosOriginales, grid)
-  app.replaceChildren(container)
+  app.innerHTML = ''
+  app.appendChild(container)
   iniciarListenerCantidad(productosOriginales)
 }
