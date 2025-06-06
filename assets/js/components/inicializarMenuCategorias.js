@@ -26,7 +26,7 @@ export async function inicializarMenuCategorias() {
     if (window.location.pathname === '/') {
       document.dispatchEvent(
         new CustomEvent('categoria-seleccionada', {
-          detail: { categoria: todas },
+          detail: { categoria: '' },
         })
       )
     } else {

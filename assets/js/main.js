@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   window.addEventListener('popstate', router)
 
-  await inicializarMenuCategorias() // ✅ INYECTA EL SUBMENÚ
+  await inicializarMenuCategorias() // ✅ Inyecta el submenú de categorías
 
   actualizarContador()
   initPanelCarrito()

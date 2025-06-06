@@ -40,6 +40,7 @@ async function cargarProductos(app) {
   let resultadosAnteriores = []
 
   const container = document.createElement('section')
+  container.className = 'productos-container'
 
   const header = document.createElement('div')
   header.className = 'productos-header'
@@ -135,6 +136,9 @@ async function cargarProductos(app) {
   document.addEventListener('categoria-seleccionada', (e) => {
     const { categoria } = e.detail
     filtroCategoria.value = categoria
+    if (filtroCategoria.selectedIndex === -1) {
+      filtroCategoria.selectedIndex = 0 // Forzar selección a "Todas"
+    }
     actualizarURL()
     manejarCambios()
   })
