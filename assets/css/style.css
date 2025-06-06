@@ -41,7 +41,6 @@ body.dark {
 
 html {
   scroll-behavior: smooth;
-  overflow-x: hidden;
 }
 
 body {
@@ -118,13 +117,11 @@ header {
   top: 0;
   height: 70px;
   background-color: var(--nav-bg);
-  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
   transition: background-color 0.3s ease;
-  margin: 0 auto;
 }
 
 .header-container {
@@ -730,34 +727,24 @@ h1 {
 }
 
 /* Estilos pagina ProductDetail*/
-/* .producto-detalle {
-  max-width: 900px;
-  margin: 2rem auto;
-  padding: 1rem;
+.container:has(.producto-detalle) .producto-detalle {
+  max-width: 500px;
+  margin: 0 auto;
 }
 
-.detalle-contenido {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  align-items: flex-start;
+.container:has(.producto-detalle) .detalle-contenido img {
+  background-color: unset;
 }
 
-.detalle-imagen {
-  max-width: 300px;
-  height: auto;
-  border-radius: 8px;
-  flex: 1;
+.container:has(.producto-detalle) .detalle-contenido h1 {
+  border-bottom: 1px solid var(--contrast-color);
+  margin: 1rem 0 1rem 0;
+  padding-bottom: 1rem;
 }
 
-.detalle-info {
-  flex: 2;
+.container:has(.producto-detalle) .detalle-contenido .primary-btn {
+  width: 100%;
 }
-
-.detalle-precio {
-  font-size: 1.2rem;
-  margin: 1rem 0;
-} */
 
 /*Estilos pagina carrito*/
 .pagina-carrito {

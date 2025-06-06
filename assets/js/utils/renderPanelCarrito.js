@@ -16,8 +16,7 @@ export function renderPanel() {
   const vacio = document.getElementById('carrito-vacio')
   const botonesCarrito = document.querySelectorAll('.carrito-btn')
 
-  lista.innerHTML = '' // Limpiar la lista antes de renderizar
-
+  lista.replaceChildren() // Limpia la lista antes de renderizar
   lista.setAttribute('aria-live', 'polite')
 
   if (carrito.length === 0) {

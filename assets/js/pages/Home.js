@@ -104,7 +104,7 @@ async function cargarProductos(app) {
     }
 
     if (listaFiltrada.length === 0) {
-      grid.innerHTML = ''
+      grid.replaceChildren()
       const mensaje = document.createElement('p')
       mensaje.className = 'sin-resultados'
       mensaje.textContent = '😔 No se encontraron productos con ese nombre.'
@@ -140,7 +140,7 @@ async function cargarProductos(app) {
   })
 
   renderizarProductos(productosOriginales, grid)
-  app.innerHTML = ''
+  app.replaceChildren()
   app.appendChild(container)
   iniciarListenerCantidad(productosOriginales)
 }
