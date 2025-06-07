@@ -49,6 +49,24 @@ body {
   color: var(--text-color);
   transition: background-color 0.3s, color 0.3s;
   overflow-x: hidden;
+  height: 100%;
+}
+
+/*Layout de la pagina*/
+#layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+#app {
+  flex: 1; /* Hace que el contenido crezca para ocupar el espacio restante */
+}
+#footer {
+  background-color: #222;
+  color: #eee;
+  text-align: center;
+  padding: 1rem;
+  border-top: 1px solid #444;
 }
 
 /* Estilos del botón de volver arriba */
@@ -177,6 +195,12 @@ header.scrolled {
   align-items: center;
 }
 
+/*LINK ACTIVO*/
+nav a.activo {
+  border-bottom: 2px solid #9c6ade;
+  font-weight: bold;
+}
+
 /* Estilos del botón de alternancia de tema */
 .theme-switch {
   display: flex;
@@ -251,7 +275,8 @@ main {
 }
 
 .container {
-  max-width: 1200px;
+  max-width: min(100vw, 1200px);
+
   margin: 0 auto;
 }
 
@@ -1003,6 +1028,50 @@ lista-carrito {
   color: var(--primary-color);
 }
 
+/*Estilos del footer*/
+.footer {
+  background-color: #222;
+  color: #eee;
+  padding: 2rem 1rem;
+  text-align: center;
+  margin-top: 4rem;
+  border-top: 1px solid #444;
+}
+
+.footer-nav {
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.footer-nav a {
+  color: #ccc;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-nav a:hover {
+  color: #9c6ade;
+}
+
+.footer-info {
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.footer-social a {
+  color: #ccc;
+  margin: 0 0.5rem;
+  font-size: 1.5rem;
+  transition: color 0.3s;
+}
+
+.footer-social a:hover {
+  color: #9c6ade;
+}
+
 /*Slider*/
 .slider {
   position: relative;
@@ -1020,10 +1089,12 @@ lista-carrito {
 .slider-slide {
   min-width: 100%;
   flex-shrink: 0;
+  overflow: hidden;
 }
 
 .slider-slide img {
   width: 100%;
+  max-width: 100%;
   height: auto;
   display: block;
   border-radius: 1rem;
@@ -1196,4 +1267,11 @@ lista-carrito {
     width: 95%;
     max-width: 95%;
   }
+}
+.slider,
+.slider-pista,
+.slider-slide,
+.slider-slide img {
+  max-width: 100vw;
+  box-sizing: border-box;
 }
