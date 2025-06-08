@@ -874,6 +874,7 @@ lista-carrito {
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  position: relative;
 }
 
 .modal.oculto {
@@ -905,6 +906,20 @@ lista-carrito {
   font-size: 1rem;
   line-height: 1.5;
   color: var(--text-color);
+}
+
+.primary-btn.cerrar-modal {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  top: 0.5rem;
+  right: 1rem;
+  padding: 1rem;
+  font-size: 1.2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Estilos de Contacto */
@@ -1034,8 +1049,6 @@ lista-carrito {
   color: #eee;
   padding: 2rem 1rem;
   text-align: center;
-  margin-top: 4rem;
-  border-top: 1px solid #444;
 }
 
 .footer-nav {

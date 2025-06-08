@@ -1,71 +1,3 @@
-// export default function Contacto() {
-//   const app = document.getElementById('app')
-
-//   const seccion = document.createElement('section')
-//   seccion.className = 'contacto-seccion'
-
-//   const header = document.createElement('div')
-//   header.className = 'contacto-header'
-
-//   const titulo = document.createElement('h1')
-//   titulo.textContent = 'Contacto'
-
-//   const descripcion = document.createElement('p')
-//   descripcion.textContent =
-//     '¿Tenés dudas, consultas o sugerencias? ¡Escribinos! Estamos para ayudarte.'
-
-//   header.appendChild(titulo)
-//   header.appendChild(descripcion)
-
-//   const formulario = document.createElement('form')
-//   formulario.className = 'contacto-formulario'
-
-//   const campos = [
-//     { label: 'Nombre completo', type: 'text', name: 'nombre' },
-//     { label: 'Correo electrónico', type: 'email', name: 'email' },
-//     { label: 'Asunto', type: 'text', name: 'asunto' },
-//     { label: 'Mensaje', type: 'textarea', name: 'mensaje' },
-//   ]
-
-//   campos.forEach(({ label, type, name }) => {
-//     const group = document.createElement('label')
-
-//     const span = document.createElement('span')
-//     span.textContent = label
-
-//     let input
-//     if (type === 'textarea') {
-//       input = document.createElement('textarea')
-//       input.rows = 5
-//     } else {
-//       input = document.createElement('input')
-//       input.type = type
-//     }
-
-//     input.name = name
-//     input.className = 'form-control'
-
-//     group.appendChild(span)
-//     group.appendChild(input)
-//     formulario.appendChild(group)
-//   })
-
-//   const boton = document.createElement('button')
-//   boton.type = 'submit'
-//   boton.textContent = 'Enviar mensaje'
-//   boton.className = 'primary-btn'
-//   formulario.appendChild(boton)
-
-//   formulario.addEventListener('submit', (e) => {
-//     e.preventDefault()
-//     alert('Formulario enviado. (Simulado)')
-//     formulario.reset()
-//   })
-
-//   seccion.appendChild(header)
-//   seccion.appendChild(formulario)
-//   app.appendChild(seccion)
-// }
 export default function Contacto() {
   const app = document.getElementById('app')
 
@@ -96,6 +28,7 @@ export default function Contacto() {
 
   campos.forEach(({ label, type, name }) => {
     const group = document.createElement('label')
+    group.setAttribute('for', name)
 
     const span = document.createElement('span')
     span.textContent = label
@@ -110,15 +43,8 @@ export default function Contacto() {
     }
 
     input.name = name
+    input.id = name
     input.className = 'form-control'
-
-    // Validación en vivo
-    input.addEventListener('input', () => {
-      input.classList.remove('input-error')
-      input.setCustomValidity('')
-      const msg = input.parentElement.querySelector('.mensaje-error')
-      if (msg) msg.remove()
-    })
 
     group.appendChild(span)
     group.appendChild(input)
@@ -134,13 +60,7 @@ export default function Contacto() {
   formulario.addEventListener('submit', (e) => {
     e.preventDefault()
 
-    const data = {
-      nombre: formulario.nombre.value.trim(),
-      email: formulario.email.value.trim(),
-      asunto: formulario.asunto.value.trim(),
-      mensaje: formulario.mensaje.value.trim(),
-    }
-
+    const data = {}
     const reglas = {
       nombre: {
         valid: (v) => v.length >= 2,
@@ -160,26 +80,28 @@ export default function Contacto() {
       },
     }
 
+    // Limpieza previa
+    formulario.querySelectorAll('.mensaje-error').forEach((el) => el.remove())
+    formulario
+      .querySelectorAll('.form-control')
+      .forEach((input) => input.classList.remove('input-error'))
+
     let esValido = true
 
-    Object.keys(data).forEach((key) => {
+    Object.keys(reglas).forEach((key) => {
       const input = formulario[key]
-      const valor = data[key]
-      const { valid, msg } = reglas[key]
+      const valor = input.value.trim()
+      data[key] = valor
 
-      input.classList.remove('input-error')
-      input.setCustomValidity('')
-      const msgAnterior = input.parentElement.querySelector('.mensaje-error')
-      if (msgAnterior) msgAnterior.remove()
+      const { valid, msg } = reglas[key]
 
       if (!valid(valor)) {
         esValido = false
         input.classList.add('input-error')
-        input.setCustomValidity(msg)
-        input.reportValidity()
 
         const error = document.createElement('div')
         error.className = 'mensaje-error'
+        error.setAttribute('aria-live', 'polite')
         error.textContent = msg
         input.parentElement.appendChild(error)
       }
@@ -189,6 +111,7 @@ export default function Contacto() {
 
     const exito = document.createElement('div')
     exito.className = 'mensaje-exito'
+    exito.setAttribute('aria-live', 'polite')
     exito.textContent = '¡Mensaje enviado con éxito!'
     formulario.after(exito)
     setTimeout(() => exito.remove(), 4000)

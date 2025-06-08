@@ -66,7 +66,8 @@ export default async function ProductDetail({ id }, contenedorExterno = null) {
   if (contenedorExterno) {
     const btnCerrar = document.createElement('button')
     btnCerrar.className = 'primary-btn cerrar-modal'
-    btnCerrar.textContent = 'Cerrar'
+    const iconoCerrar = document.createElement('i')
+    iconoCerrar.className = 'fa-solid fa-xmark'
     btnCerrar.addEventListener('click', () => {
       const modal = document.getElementById('modal-producto')
       if (modal) {
@@ -74,6 +75,7 @@ export default async function ProductDetail({ id }, contenedorExterno = null) {
         modal.querySelector('.modal-contenido').innerHTML = ''
       }
     })
+    btnCerrar.appendChild(iconoCerrar)
     info.appendChild(btnCerrar)
   }
 
