@@ -65,7 +65,7 @@ async function cargarProductos(app) {
   header.className = 'productos-header'
 
   const title = document.createElement('h1')
-  title.textContent = 'Productos'
+  title.textContent = 'Nuestros Productos'
 
   const input = crearBuscador((valor) => {
     textoBusqueda = valor
